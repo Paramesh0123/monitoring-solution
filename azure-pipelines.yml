@@ -1,0 +1,42 @@
+trigger:
+  - main
+
+pool:
+  name: Default
+  vmImage: 'webserver'
+
+stages:
+  - stage: 'Grafana'
+    jobs:
+      - job: 'Installation'
+        displayName: 'Installing Grafana'
+        steps:
+          - script: ansible-playbook install_grafana.yml --limit=grafana
+
+  - stage: 'Prometheus'
+    jobs:
+      - job: 'Installation'
+        displayName: 'Installing Prometheus'
+        steps: 
+          - script: ansible-playbook install_prometheus.yml --limit=prometheus
+
+  - stage: 'NodeExporter'
+    jobs:
+      - job: 'Installation'
+        displayName: 'Installing NodeExporter'
+        steps:
+          - script: ansible-playbook install_nodeexporter.yml --limit=appserver
+
+  - stage: 'AlertManager'
+    jobs:
+      - job: 'Installation'
+        displayName: 'Installing AlertManager'
+        steps:
+          - script: ansible-playbook install_alertmanager.yml --limit=prometheus
+
+  - stage: 'Appserver2'
+    jobs:
+      - job: 'Installation'
+        displayName: 'Installing Node Exporter on appserver2'
+        steps:
+          - script: ansible-playbook install_nodeexporter.yml --limit=appserver2
